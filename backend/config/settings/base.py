@@ -44,7 +44,13 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",
     "apps.core.apps.CoreConfig",
+    "apps.organizations.apps.OrganizationsConfig",
+    "apps.accounts.apps.AccountsConfig",
+    "apps.requests.apps.RequestsConfig",
+    "apps.audit.apps.AuditConfig",
 ]
+
+AUTH_USER_MODEL = "accounts.User"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -115,9 +121,15 @@ CELERY_RESULT_SERIALIZER = "json"
 CELERY_TIMEZONE = TIME_ZONE
 
 REST_FRAMEWORK = {
-    "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.AllowAny",
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.SessionAuthentication",
     ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 20,
+    "EXCEPTION_HANDLER": "apps.core.exceptions.api_exception_handler",
 }
 
 CORS_ALLOWED_ORIGINS: list[str] = []
