@@ -1,15 +1,8 @@
 import type { HealthResponse } from '../types/health'
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000'
+import { apiFetch } from './http'
 
 export async function getHealth(): Promise<HealthResponse> {
-  const response = await fetch(`${API_BASE_URL}/api/v1/health/`)
-
-  if (!response.ok) {
-    throw new Error(`Health request failed with status ${response.status}`)
-  }
-
-  const payload: unknown = await response.json()
+  const payload: unknown = await apiFetch<unknown>('/api/v1/health/')
   if (!isHealthResponse(payload)) {
     throw new Error('Health response was not in the expected format')
   }
