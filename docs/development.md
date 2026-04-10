@@ -3,7 +3,7 @@
 ## Prerequisites
 
 - Docker and Docker Compose
-- Optionally Python 3.12+ and Node 22+ for running tests/builds on the host
+- Optionally Python 3.12+ and Node 22+ for host-side tests/builds
 
 ## Start the stack
 
@@ -11,62 +11,63 @@
 docker compose up --build
 ```
 
-Useful Make targets:
+## Seed development users
+
+After migrations, create sample organization and users (development only):
 
 ```bash
-make up
-make down
-make build
-make logs
-make test
-make backend-test
-make frontend-build
+docker compose exec backend python manage.py seed_dev_data
 ```
+
+Default password (documented in command output): `dev-password-change-me`
+
+| Email | Role |
+|-------|------|
+| admin@acme.dev | ADMIN |
+| operator@acme.dev | OPERATOR |
+| reviewer@acme.dev | REVIEWER |
+
+## Authentication from the frontend
+
+The React app calls `http://localhost:8000` with session cookies. Ensure `VITE_API_BASE_URL=http://localhost:8000` and use the login screen at http://localhost:5173.
+
+Flow:
+
+1. Frontend fetches CSRF cookie (`/api/v1/auth/csrf/`).
+2. Login posts credentials to `/api/v1/auth/login/`.
+3. Subsequent API calls include cookies and CSRF token.
 
 ## Environment variables
 
-See `.env.example`. Docker Compose interpolates a local `.env` file when present and otherwise uses the documented defaults.
-
-Do not commit `.env`. Never put real secrets in the repository.
-
-## Frontend API URL
-
-The browser calls Django directly, so `VITE_API_BASE_URL` should be a host-reachable URL such as `http://localhost:8000`. Development CORS allows `http://localhost:5173`. CSRF is not disabled.
+See `.env.example`. Do not commit `.env` or production secrets.
 
 ## Celery
-
-Redis is the Celery broker. The worker command is:
-
-```bash
-celery -A config worker --loglevel=info
-```
-
-Enqueue the foundation test task against a running stack:
 
 ```bash
 docker compose exec backend python manage.py enqueue_health_check
 ```
 
-The worker log should show `health_check_task` completing. Unit tests call the task eagerly and do not require a live worker.
-
-## Backend tests on the host
+## Backend tests
 
 ```bash
-cd backend
-pip install -r requirements/development.txt
-pytest
+make backend-test
 ```
 
-`pytest.ini` selects `config.settings.test`.
-
-## Frontend build on the host
+Or with a bind mount for local edits:
 
 ```bash
-cd frontend
-npm ci
-npm run build
+docker compose run --rm --no-deps -v "$PWD/backend:/app" -e RUN_MIGRATIONS=false backend pytest
 ```
 
-## Production settings
+## Frontend build
 
-`config.settings.production` is a structure for later deployment. It refuses to start with `DEBUG` enabled or with the placeholder secret key. It is not a complete production deployment.
+```bash
+make frontend-build
+```
+
+## Migrations
+
+```bash
+docker compose exec backend python manage.py migrate
+docker compose exec backend python manage.py makemigrations --check --dry-run
+```
