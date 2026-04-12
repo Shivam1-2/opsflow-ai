@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Development guide
+    url: https://github.com/Shivam1-2/opsflow-ai/blob/main/docs/development.md
+    about: Local setup, testing, and Docker workflow

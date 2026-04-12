@@ -61,3 +61,11 @@ make test
 
 - [Architecture](docs/architecture.md)
 - [Development](docs/development.md)
+- [Contributing](CONTRIBUTING.md)
+- [Security policy](SECURITY.md)
+- [Code of conduct](CODE_OF_CONDUCT.md)
+- [Accessibility](ACCESSIBILITY.md)
+
+## License
+
+[MIT](LICENSE)

@@ -1,0 +1,42 @@
+name: Feature request
+description: Suggest an enhancement aligned with the project roadmap
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe the problem and proposed solution. Check that the idea fits the current milestone scope.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem statement
+      description: What user or operational need does this address?
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope check
+      options:
+        - label: This does not require AI/LLM integration (or it is explicitly in scope for a future milestone)
+          required: true
+        - label: Tenant isolation and backend authorization remain server-side
+          required: true
