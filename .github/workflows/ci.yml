@@ -1,8 +1,8 @@
 name: CI
 
+# Automatic CI is paused. Run manually from Actions → CI → Run workflow.
 on:
-  push:
-  pull_request:
+  workflow_dispatch:
 
 jobs:
   backend:
